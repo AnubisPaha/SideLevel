@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://android.com">
-    <application
+<manifest xmlns:android="http://android.com/apk/res/android">
+    <applicatio
         android:allowBackup="true"
         android:label="SideLevel"
         android:supportsRtl="true"
