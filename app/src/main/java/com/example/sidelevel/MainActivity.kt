@@ -136,7 +136,6 @@ fun LevelAppScreen(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        // 1. ШКАЛА С ПУЗЫРЬКОМ ВДОЛЬ ОПОРНОЙ ЛЕВОЙ ГРАНИ
         Box(
             modifier = Modifier
                 .width(75.dp)
@@ -180,7 +179,6 @@ fun LevelAppScreen(
             }
         }
 
-        // 2. ПАНЕЛЬ УПРАВЛЕНИЯ, РАЗВЕРНУТАЯ НА 90° ПО ЧАСОВОЙ СТРЕЛКЕ
         BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
@@ -196,7 +194,6 @@ fun LevelAppScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Левый блок (в рабочем положении): звук и подсказка
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.Start,
@@ -225,7 +222,6 @@ fun LevelAppScreen(
                     )
                 }
 
-                // Центральный блок: крупные цифры угла
                 Column(
                     modifier = Modifier.weight(1.2f),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -249,7 +245,6 @@ fun LevelAppScreen(
                     )
                 }
 
-                // Правый блок: кнопки калибровки
                 Column(
                     modifier = Modifier.weight(1.1f),
                     horizontalAlignment = Alignment.End,
@@ -263,3 +258,10 @@ fun LevelAppScreen(
                     )
 
                     Button(
+                        onClick = onCalibrate,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            
