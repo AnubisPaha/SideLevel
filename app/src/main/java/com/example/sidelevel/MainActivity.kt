@@ -81,21 +81,25 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
+    override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
-            filteredGravity[0] = alpha * event.values[0] + (1 - alpha) * filteredGravity[0]
-            filteredGravity[1] = alpha * event.values[1] + (1 - alpha) * filteredGravity[1]
-            filteredGravity[2] = alpha * event.values[2] + (1 - alpha) * filteredGravity[2]
+            val rawX = event.values.get(0)
+            val rawY = event.values.get(1)
+            val rawZ = event.values.get(2)
 
-            val x = filteredGravity[0]
-            val y = filteredGravity[1]
-            val z = filteredGravity[2]
+            val x = alpha * rawX + (1 - alpha) * filteredGravity.get(0)
+            val y = alpha * rawY + (1 - alpha) * filteredGravity.get(1)
+            val z = alpha * rawZ + (1 - alpha) * filteredGravity.get(2)
+
+            filteredGravity.set(0, x)
+            filteredGravity.set(1, y)
+            filteredGravity.set(2, z)
 
             val horizontalProjection = sqrt((x * x + z * z).toDouble())
             val angleRad = atan2(y.toDouble(), horizontalProjection)
             rawAngle = Math.toDegrees(angleRad).toFloat()
         }
     }
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 }
 
