@@ -81,7 +81,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-    override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             val rawX = event.values.get(0)
             val rawY = event.values.get(1)
@@ -100,6 +99,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             rawAngle = Math.toDegrees(angleRad).toFloat()
         }
     }
+
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 }
 
