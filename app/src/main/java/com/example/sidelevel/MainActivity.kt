@@ -124,7 +124,7 @@ fun LevelAppScreen(
                 val centerX = size.width / 2f
                 drawLine(Color.White, Offset(0f, centerY - 45.dp.toPx()), Offset(size.width, centerY - 45.dp.toPx()), 3f)
                 drawLine(Color.White, Offset(0f, centerY + 45.dp.toPx()), Offset(size.width, centerY + 45.dp.toPx()), 3f)
-                drawLine(Color.Gray, Offset(0f, centerY), Offset(size.width, centerY), 2f, PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
+                drawLine(Color.Gray, Offset(0f, centerY), Offset(size.width, centerY), 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
                 val maxOffset = (size.height / 2f) - 40.dp.toPx()
                 val bubbleOffsetY = (currentAngle * 12.dp.toPx()).coerceIn(-maxOffset, maxOffset)
                 drawCircle(activeColor, 26.dp.toPx(), Offset(centerX, centerY - bubbleOffsetY))
