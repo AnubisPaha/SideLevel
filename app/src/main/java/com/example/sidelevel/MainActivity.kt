@@ -20,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -135,6 +136,7 @@ fun LevelAppScreen(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
+        // 1. ШКАЛА С ПУЗЫРЬКОМ ВДОЛЬ ОПОРНОЙ ЛЕВОЙ ГРАНИ
         Box(
             modifier = Modifier
                 .width(75.dp)
@@ -178,100 +180,86 @@ fun LevelAppScreen(
             }
         }
 
-        Column(
+        // 2. ПАНЕЛЬ УПРАВЛЕНИЯ, РАЗВЕРНУТАЯ НА 90° ПО ЧАСОВОЙ СТРЕЛКЕ
+        BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "◄ ОПОРНАЯ ГРАНЬ (ЛЕВЫЙ ТОРЦ)",
-                    color = activeColor,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                FilledTonalButton(
-                    onClick = { isSoundEnabled = !isSoundEnabled },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (isSoundEnabled) Color(0xFF2E3B4E) else Color(0xFF2A2A2A)
-                    ),
-                    shape = RoundedCornerShape(10.dp)
+            Row(
+                modifier = Modifier
+                    .requiredWidth(maxHeight)
+                    .requiredHeight(maxWidth)
+                    .rotate(90f)
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Левый блок (в рабочем положении): звук и подсказка
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
                 ) {
+                    FilledTonalButton(
+                        onClick = { isSoundEnabled = !isSoundEnabled },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = if (isSoundEnabled) Color(0xFF2E3B4E) else Color(0xFF2A2A2A)
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(
+                            text = if (isSoundEnabled) "🔊 ЗВУК: ВКЛ" else "🔇 ЗВУК: ВЫКЛ",
+                            color = if (isSoundEnabled) Color(0xFF82B1FF) else Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = if (isSoundEnabled) "🔊 СИГНАЛ ОТКЛОНЕНИЯ: ВКЛ" else "🔇 СИГНАЛ ОТКЛОНЕНИЯ: ВЫКЛ",
-                        color = if (isSoundEnabled) Color(0xFF82B1FF) else Color.Gray,
+                        text = "▼ ОПОРНАЯ ГРАНЬ ВНИЗУ",
+                        color = activeColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
-            }
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = String.format("%.1f°", abs(currentAngle)),
-                    color = activeColor,
-                    fontSize = 74.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
-                Text(
-                    text = when {
-                        isLevel -> "ГОРИЗОНТ (ТИШИНА)"
-                        currentAngle > 0 -> "ОТКЛОНЕНИЕ: ВЕРХ ▲"
-                        else -> "ОТКЛОНЕНИЕ: НИЗ ▼"
-                    },
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = String.format("Поправка: %+.2f°", calibrationOffset),
-                    color = Color.Gray,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-
-                Button(
-                    onClick = onCalibrate,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp)
+                // Центральный блок: крупные цифры угла
+                Column(
+                    modifier = Modifier.weight(1.2f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "КАЛИБРОВАТЬ 0.0°",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        text = String.format("%.1f°", abs(currentAngle)),
+                        color = activeColor,
+                        fontSize = 68.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                    Text(
+                        text = when {
+                            isLevel -> "ГОРИЗОНТ (ТИШИНА)"
+                            currentAngle > 0 -> "ПРАВЫЙ КРАЙ ВЫШЕ ▲"
+                            else -> "ЛЕВЫЙ КРАЙ ВЫШЕ ▲"
+                        },
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                OutlinedButton(
-                    onClick = onResetCalibration,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(46.dp)
+                // Правый блок: кнопки калибровки
+                Column(
+                    modifier = Modifier.weight(1.1f),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Сбросить поправку",
-                        fontSize = 14.sp,
-                        color = Color.LightGray
+                        text = String.format("Поправка: %+.2f°", calibrationOffset),
+                        color = Color.Gray,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
-                }
-            }
-        }
-    }
-}
+
+                    Button(
